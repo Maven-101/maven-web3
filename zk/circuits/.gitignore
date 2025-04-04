@@ -1,0 +1,10 @@
+circuit_cpp
+circuit_js
+circuit_0000.zkey
+circuit_0001.zkey
+circuit.r1cs
+circuit.sym
+pot12_0000.ptau
+pot12_0001.ptau
+pot12_final.ptau
+verification_key.json
