@@ -1,10 +1,16 @@
-import { ethers } from "ethers";
+import { ethers, keccak256, toUtf8Bytes } from "ethers";
 
-const register = async (facialFeaturesHash, cidHash) => {
+const register = async (facialFeatures, cid) => {
   try {
     if (!window.ethereum) {
       alert("Metamask not installed");
     }
+
+    const quantized = facialFeatures.map((v) => v.toFixed(5));
+    const embeddingStr = quantized.join(",");
+
+    const facialFeaturesHash = keccak256(toUtf8Bytes(embeddingStr));
+    const cidHash = keccak256(toUtf8Bytes(cid));
 
     const provider = new ethers.BrowserProvider(window.ethereum);
     provider.send("eth_requestAccounts", []);

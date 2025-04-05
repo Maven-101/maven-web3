@@ -28,12 +28,12 @@ facial vector →  Encrypt with secret key →  Upload to IPFS → Get CID
 2) 
 */
 
-
-
 // app/src/encryptUpload.js
 import { create } from "ipfs-http-client";
 import { encryptVector } from "./encryption.js";
 import dotenv from "dotenv";
+import register from "./register.js";
+
 dotenv.config();
 
 const auth =
@@ -66,29 +66,31 @@ export async function uploadToIpfs(faceEmbedding, userId = null) {
       metadata: {
         userId: userId,
         timestamp: new Date().toISOString(),
-        dimensions: faceEmbedding.length
-      }
+        dimensions: faceEmbedding.length,
+      },
     };
-    
+
     // Encrypt the data
     const encrypted = encryptVector(data, secretKey);
-    
+
     // Upload to IPFS
     const result = await ipfs.add(encrypted);
-    console.log("✅ Uploaded to IPFS");
-    console.log("🔗 CID:", result.path);
-    
+    console.log("Uploaded to IPFS");
+    console.log("CID:", result.path);
+
+    await register(faceEmbedding, result.path);
+
     return {
       success: true,
       cid: result.path,
       userId: userId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   } catch (err) {
-    console.error("❌ Upload failed:", err.message);
+    console.error("Upload failed:", err.message);
     return {
       success: false,
-      error: err.message
+      error: err.message,
     };
   }
 }
@@ -96,9 +98,11 @@ export async function uploadToIpfs(faceEmbedding, userId = null) {
 // For direct command line usage
 if (import.meta.url.endsWith(process.argv[1])) {
   // Sample vector for testing - replace with your ML vector
-  const sampleVector = Array(128).fill(0).map(() => Math.random());
-  
+  const sampleVector = Array(128)
+    .fill(0)
+    .map(() => Math.random());
+
   uploadToIpfs(sampleVector, "user123")
-    .then(result => console.log(result))
-    .catch(err => console.error(err));
+    .then((result) => console.log(result))
+    .catch((err) => console.error(err));
 }
