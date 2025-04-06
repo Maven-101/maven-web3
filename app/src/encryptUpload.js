@@ -3,8 +3,6 @@ Returns a CID which acts as a pointer to this encrypted data.
 To run -> node app/src/encryptUpload.js
  Run below commands in main directory !
 npm install ipfs-http-client crypto-js dotenv
-npm install dotenv ipfs-http-client crypto-js
-
 
 <------------           JUST FOR KNOWLEDGE          ------------>
 // IPFS tells us the name of the file(hash) , instead of the locationof the file instead (like https url)
@@ -93,16 +91,4 @@ export async function uploadToIpfs(faceEmbedding, userId = null) {
       error: err.message,
     };
   }
-}
-
-// For direct command line usage
-if (import.meta.url.endsWith(process.argv[1])) {
-  // Sample vector for testing - replace with your ML vector
-  const sampleVector = Array(128)
-    .fill(0)
-    .map(() => Math.random());
-
-  uploadToIpfs(sampleVector, "user123")
-    .then((result) => console.log(result))
-    .catch((err) => console.error(err));
 }
